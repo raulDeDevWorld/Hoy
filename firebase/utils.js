@@ -70,33 +70,31 @@ function handleSignOut() {
 
 // -------------------------------Firebase Realtime Database------------------------------------
 
-const dbRef = ref(getDatabase());
-function getPortada(rute, file, context, setUserData, monthAndYear) {
-let arr = ['Cultura', 'Deportes', 'Politica']
-
-    let allData = {}
+const dbRef = ref(getDatabase()); 
 
 
- let dat =  arr.map(async (i) => {
+function getData(rute, file, context, setUserData, monthAndYear) {
+  let arr = ['Deportes', 'Politica']
 
-let d = await get(query(ref(db, `Portada/${i}/Posts`), limitToLast(5)))
+  let allData = {}
+
+  arr.map((i) => {
+
+    get(query(ref(db, `${i}/Posts`), limitToLast(5)))
       .then((snapshot) => {
         if (snapshot.exists()) {
-          // setUserData(snapshot.val())
           let snap = snapshot.val()
-          // console.log({[file]: snap})
-   
-        // console.log(snap) 
-        return snap
+          allData = {...allData, [i]: {
+           Posts: snap,
+           Templates: 'hello'
+          }
+        } 
+          return setUserData(allData)
         }
       })
-return allData = {...allData, d}
- }
-     
+  }
   );
-  console.log(allData)
-  setUserData('hello')
-
+}
   // get(query(ref(db, 'users')))
   // .then( (snapshot) => {
   //   if (snapshot.exists()) {
@@ -107,11 +105,7 @@ return allData = {...allData, d}
   //       }
 
   // });
-
-}
-
-
-function getData() {
+function getPortada() {
 
 }
 
@@ -198,3 +192,4 @@ async function removeData(ruteDB, setUserData, setUserSuccess) {
 
 }
 export { app, onAuth, signUpWithEmail, signInWithEmail, handleSignOut, getPortada, getData, getSpecificData, writeUserData, removeData, }
+
